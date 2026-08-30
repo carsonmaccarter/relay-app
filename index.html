@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A focused CRM and outreach workspace for organizing and contacting real-estate businesses." />
+    <title>Relay — Outreach workspace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand"><span class="brand-mark">R</span><span>Relay</span></div>
+        <nav class="nav" aria-label="Main navigation">
+          <button class="nav-item active" data-tab="crm"><span class="nav-icon">▦</span><span>CRM</span></button>
+          <button class="nav-item" data-tab="tasks">
+            <span class="nav-icon">✓</span><span>Tasks</span><span class="nav-count accent" id="taskCount">0</span>
+          </button>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="mini-progress">
+            <div class="mini-progress-head"><span>Daily outreach</span><span id="dailyProgressLabel">0 / 0</span></div>
+            <div class="progress-track"><span id="dailyProgressBar"></span></div>
+          </div>
+          <button class="user-card" id="settingsButton">
+            <span class="avatar settings-avatar">⚙</span>
+            <span><strong>Outreach settings</strong><small>Timing and attempt limits</small></span>
+            <span class="chevron">›</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="topbar-title">
+            <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Collapse sidebar" aria-label="Collapse sidebar" aria-expanded="true">☰</button>
+            <div>
+              <p class="eyebrow" id="todayLabel"></p>
+              <h1 id="pageTitle">CRM overview</h1>
+            </div>
+          </div>
+          <div class="top-actions">
+            <span class="storage-status local" id="storageStatus">Local only</span>
+            <label class="search"><span>⌕</span><input id="globalSearch" type="search" placeholder="Search companies" /></label>
+            <button class="icon-button" id="analyticsButton" title="Open CRM analytics" aria-label="Open CRM analytics">◔</button>
+          </div>
+        </header>
+
+        <section class="page" id="collectionPage">
+          <div class="hero-panel">
+            <div>
+              <span class="section-kicker">PROSPECT PIPELINE</span>
+              <h2>Find the right companies.<br />Keep the outreach human.</h2>
+              <p>Review fresh leads, confirm the best contact method, and move qualified companies into your CRM.</p>
+            </div>
+            <div class="hero-actions">
+              <button class="button secondary" id="uploadButton">⇧ Import CSV</button>
+              <input type="file" id="csvInput" accept=".csv,text/csv" hidden />
+              <button class="button primary" id="discoverButton"><span>✦</span> Run discovery</button>
+            </div>
+          </div>
+
+          <div class="metric-grid collection-metrics" id="collectionMetrics"></div>
+
+          <div class="panel">
+            <div class="panel-header responsive-header">
+              <div><h3>Lead review</h3><p>Approve companies before they enter your active outreach.</p></div>
+              <div class="toolbar">
+                <div class="segmented" id="leadFilters">
+                  <button class="active" data-filter="all">All</button>
+                  <button data-filter="new">New</button>
+                  <button data-filter="approved">Approved</button>
+                </div>
+                <button class="button small secondary" id="addLeadButton">＋ Add lead</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th class="checkbox-col"><input type="checkbox" id="selectAllLeads" /></th><th>Company</th><th>Market</th><th>Best contact</th><th>Fit</th><th>Status</th><th></th></tr></thead>
+                <tbody id="leadTableBody"></tbody>
+              </table>
+            </div>
+            <div class="bulk-bar hidden" id="bulkBar"><span><strong id="selectedCount">0</strong> leads selected</span><button class="button primary small" id="bulkImportButton">Import to CRM</button></div>
+          </div>
+        </section>
+
+        <section class="page active" id="crmPage">
+          <div class="metric-grid" id="crmMetrics"></div>
+          <div class="crm-layout">
+            <div class="panel company-browser">
+              <div class="panel-header responsive-header">
+                <div><h3>Companies</h3><p>Your active outreach pipeline.</p></div>
+                <div class="toolbar"><select id="crmTypeFilter"><option value="all">All segments</option><option value="Photography">Photographers</option><option value="Airbnb Management">Airbnb managers</option></select><a class="button small secondary" href="relay-crm-upload-template.xlsx" download>↓ Template</a><button class="button small secondary" id="crmImportButton">⇧ Import CSV</button><button class="button small secondary" id="crmAddButton">＋ Add company</button></div>
+              </div>
+              <div class="company-list" id="companyList"></div>
+            </div>
+            <aside class="panel company-detail" id="companyDetail"></aside>
+          </div>
+        </section>
+
+        <section class="page" id="tasksPage">
+          <div class="task-heading">
+            <div><span class="section-kicker">TODAY'S WORK</span><h2>One clear list. No lead left behind.</h2><p id="taskSummaryText"></p></div>
+            <div class="completion-ring" id="completionRing"><div><strong id="completionPercent">0%</strong><small>complete</small></div></div>
+          </div>
+          <div class="task-layout">
+            <div>
+              <div class="task-tabs" id="taskFilters"><button class="active" data-filter="today">Today <span id="todayTaskBadge">0</span></button><button data-filter="overdue">Overdue <span id="overdueTaskBadge">0</span></button><button data-filter="upcoming">Upcoming</button><button data-filter="completed">Completed</button></div>
+              <div class="task-list" id="taskList"></div>
+            </div>
+            <aside class="task-sidebar">
+              <div class="panel focus-card"><span class="section-kicker">DAILY FOCUS</span><h3 id="focusRemaining">0 tasks remaining</h3><p>Complete each outreach action, then mark it sent to schedule the next step automatically.</p><div class="focus-breakdown" id="focusBreakdown"></div></div>
+              <div class="panel tip-card"><span class="tip-icon">✦</span><div><strong>Database-driven tasks</strong><p>Tasks use the highest-ranked eligible CRM contact method. History supplies its attempt count and next follow-up date.</p></div></div>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <dialog id="leadDialog">
+      <form method="dialog" id="leadForm" class="dialog-form">
+        <div class="dialog-head"><div><span class="section-kicker">NEW PROSPECT</span><h2>Add a company</h2></div><button class="dialog-close" type="button" data-close-dialog="leadDialog" aria-label="Close">×</button></div>
+        <div class="form-grid">
+          <label class="span-2">Company name<input required name="company" placeholder="e.g. Mesa Property Media" /></label>
+          <label>Company type<select name="type"><option>Photography</option><option>Airbnb Management</option></select></label>
+          <label>Location<input required name="location" placeholder="City, State" /></label>
+          <label class="span-2">Website<input name="website" type="url" placeholder="https://" /></label>
+          <label class="span-2">Contact form URL<input name="contactForm" type="url" placeholder="https://company.com/contact" /></label>
+          <label>Email<input name="email" type="email" placeholder="hello@company.com" /></label>
+          <label>Phone<input name="phone" type="tel" placeholder="(555) 555-0123" /></label>
+          <label>Contact name <small>optional</small><input name="contactName" placeholder="Name" /></label>
+          <label>Title <small>optional</small><input name="contactTitle" placeholder="Owner, Marketing Director..." /></label>
+          <div class="contact-repeater span-2"><div class="repeater-head"><span>Additional contact methods</span><button class="row-button" id="addLeadContactMethod" type="button">＋ Add method</button></div><div id="leadContactMethods"></div></div>
+        </div>
+        <div class="dialog-actions"><button class="button secondary" type="button" data-close-dialog="leadDialog">Cancel</button><button class="button primary" id="saveLeadButton" type="submit">Save prospect</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="settingsDialog">
+      <form method="dialog" class="dialog-form settings-form">
+        <div class="dialog-head"><div><span class="section-kicker">PREFERENCES</span><h2>Outreach settings</h2></div><button class="dialog-close" type="button" data-close-dialog="settingsDialog">×</button></div>
+        <label>Maximum outreach attempts per contact method<select id="attemptThreshold"><option value="2">2 attempts</option><option value="3">3 attempts</option><option value="4">4 attempts</option></select></label>
+        <label>Days after an outreach before its follow-up appears in Tasks<input id="staleDays" type="number" min="1" max="90" /></label>
+        <p class="settings-note">The follow-up date comes from the latest outbound CRM history entry. Every task uses the highest-ranked method that is not exhausted or waiting for a LinkedIn connection.</p>
+        <div class="dialog-actions split-actions"><button class="button danger hidden" id="signOutButton" type="button">Sign out</button><span></span><button class="button primary" id="saveSettingsButton" type="button">Save settings</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="authDialog" class="auth-dialog">
+      <form id="authForm" class="dialog-form">
+        <div class="dialog-head"><div><span class="section-kicker">SECURE DATABASE</span><h2>Sign in to Relay</h2><p class="dialog-subtitle">Use the app user you created in Supabase Authentication.</p></div></div>
+        <div class="form-grid">
+          <label class="span-2">Email<input required name="email" type="email" autocomplete="username" /></label>
+          <label class="span-2">Password<input required name="password" type="password" autocomplete="current-password" /></label>
+        </div>
+        <p class="auth-error hidden" id="authError"></p>
+        <p class="settings-note">Your Supabase dashboard account is separate from your app login. Create your Relay user under Authentication → Users.</p>
+        <div class="dialog-actions"><button class="button primary" id="authSubmitButton" type="submit">Sign in</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="editCompanyDialog">
+      <form id="editCompanyForm" class="dialog-form">
+        <div class="dialog-head"><div><span class="section-kicker">CRM RECORD</span><h2>Edit company</h2></div><button class="dialog-close" type="button" data-close-dialog="editCompanyDialog" aria-label="Close">×</button></div>
+        <input type="hidden" name="id" />
+        <div class="form-grid">
+          <label class="span-2">Company name<input required name="company" /></label>
+          <label>Company type<select name="type"><option>Photography</option><option>Airbnb Management</option></select></label>
+          <label>Pipeline stage<select name="stage"><option>New</option><option>Contacted</option><option>Waiting for reply</option><option>Follow-up due</option><option>Interested</option><option>Contact exhausted</option><option>Paused</option><option>Retired</option><option>Do not contact</option></select></label>
+          <label class="span-2">Location<input required name="location" /></label>
+          <label class="span-2">Website<input name="website" type="url" placeholder="https://" /></label>
+          <label class="span-2">Contact form URL<input name="contactForm" type="url" placeholder="https://company.com/contact" /></label>
+          <label>Email<input name="email" type="email" /></label>
+          <label>Phone<input name="phone" type="tel" /></label>
+          <label>Contact name <small>optional</small><input name="contactName" /></label>
+          <label>Contact title <small>optional</small><input name="contactTitle" /></label>
+          <div class="contact-repeater span-2"><div class="repeater-head"><span>Additional contact methods</span><button class="row-button" id="addCompanyContactMethod" type="button">＋ Add method</button></div><div id="companyContactMethods"></div></div>
+          <label class="span-2">Fit notes<textarea name="reason" rows="3"></textarea></label>
+        </div>
+        <div class="dialog-actions"><button class="button secondary" type="button" data-close-dialog="editCompanyDialog">Cancel</button><button class="button primary" type="submit">Save changes</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="activityDialog">
+      <form id="activityForm" class="dialog-form">
+        <div class="dialog-head"><div><span class="section-kicker">CRM HISTORY</span><h2 id="activityDialogTitle">Edit history entry</h2></div><button class="dialog-close" type="button" data-close-dialog="activityDialog" aria-label="Close">×</button></div>
+        <input type="hidden" name="companyId" />
+        <input type="hidden" name="activityId" />
+        <div class="form-grid">
+          <label class="span-2">Activity type<input required name="kind" placeholder="Contact form sent, Reply received..." /></label>
+          <label>Date<input required name="date" type="date" /></label>
+          <label>Direction<select name="direction"><option value="outbound">Outbound outreach</option><option value="inbound">Inbound response</option><option value="note">Internal note</option></select></label>
+          <label class="span-2">Contact method<select name="methodId" id="activityMethodId"></select></label>
+          <label class="span-2">Notes<textarea name="detail" rows="4" placeholder="What happened?"></textarea></label>
+        </div>
+        <div class="dialog-actions split-actions"><button class="button danger hidden" id="deleteActivityButton" type="button">Delete entry</button><span></span><button class="button secondary" type="button" data-close-dialog="activityDialog">Cancel</button><button class="button primary" type="submit">Save history</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="importPreviewDialog" class="wide-dialog">
+      <div class="dialog-form">
+        <div class="dialog-head"><div><span class="section-kicker">CSV IMPORT</span><h2>Review CRM records</h2><p id="importSummary" class="dialog-subtitle"></p></div><button class="dialog-close" type="button" data-close-dialog="importPreviewDialog" aria-label="Close">×</button></div>
+        <div class="table-wrap import-preview"><table><thead><tr><th class="checkbox-col">Create</th><th>Company</th><th>Type</th><th>Market</th><th>Website domain</th><th>Contacts</th><th>Review</th></tr></thead><tbody id="importPreviewBody"></tbody></table></div>
+        <div class="dialog-actions"><button class="button secondary" type="button" data-close-dialog="importPreviewDialog">Cancel</button><button class="button primary" id="importSelectedButton" type="button">Import selected records</button></div>
+      </div>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="supabase-storage.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
